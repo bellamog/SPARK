@@ -31,8 +31,15 @@ library(MatchIt) ## Matching with caliper
 # Load in data
 
 ```{r}
-#elizabethaberts_adolescence 
-stim<-read.csv(file.choose()) 
+
+## Set path
+path <- "/Users/bellamoger/Documents/SPARK/"
+
+## Load in
+stim <- read.csv(paste0(path, "elizabetheberts_adolescent_faces_r01_faceratings_raw_2404041231.csv"))
+
+## Investigate the variables we kept
+skim(stim)
 ```
 
 
@@ -182,6 +189,11 @@ face_info <- read.csv(file.choose()) %>%
   select(image_name, gender, race, age_group, age_rating,
          contains("ISSUES")) %>% 
   rename(type = race)
+
+## Load additional face info
+face_info <- read.csv("/Users/bellamoger/Documents/SPARK/demographics_real.csv") %>% 
+  select(image_name, gender, race, age_group, age_rating, contains("ISSUES")) %>% 
+  rename(type = race)
 ```
 
 # Merge all data frames
@@ -200,7 +212,12 @@ stimuli <- reduce(data_frames, full_join, by = "image_name") %>%
 ### ok going to try to reload in updated file (051224)
 
 ```{r}
-stimuli.work<-read.csv(file.choose())
+
+## Set path
+path <- "/Users/bellamoger/Documents/SPARK/"
+
+## Load in
+stimuli.work <- read.csv(paste0(path, "stimuli_051224.csv")) 
 
 # look at distributions
 stimuli.work %>% 
