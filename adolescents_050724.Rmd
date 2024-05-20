@@ -450,6 +450,9 @@ table(matched_data_boydouble$gender)
 ## Binding two matched dataframes together
 matched_data_girlsingle_boydouble <- matched_data_girlsingle %>% rbind(matched_data_boydouble)
 
+#export this as a csv file
+write.csv(x = matched_data_girlsingle_boydouble, file = "matched_data_girlsingle_boydouble.csv")
+
 ## What is the overall distance
 summary(matched_data_girlsingle_boydouble$distance)
 table(matched_data_girlsingle_boydouble$door_or_face, matched_data_girlsingle_boydouble$type)
