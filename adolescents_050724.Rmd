@@ -1,0 +1,507 @@
+---
+title: "adolescent_050724"
+output: html_document
+date: "2024-05-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r cars}
+summary(cars)
+```
+
+
+# clear history
+rm(list=ls())
+
+# Load Packages
+
+```{r}
+library(tidyverse)## Always load tidyverse
+library(skimr) ## Used to summarize our dataframe
+library(corrplot) ## correlograms
+library(psycho) ## dprime
+#install.packages("MatchIt")
+library(MatchIt) ## Matching with caliper
+```
+
+
+# Load in data
+
+```{r}
+#elizabethaberts_adolescence 
+stim<-read.csv(file.choose()) 
+```
+
+
+# Prepping encoding dataframe and looking at distributions
+
+```{r}
+encoding <- stim %>%
+  filter(trialcode == "encoding") %>%
+  mutate(imagetype_vote = recode(response,
+                                 `33` = "child",
+                                 `36` = "not_child"))
+
+## Looking at distributions
+encoding %>% 
+  group_by(subject, imagetype_vote) %>% 
+  tally() %>% 
+  pivot_wider(names_from = imagetype_vote, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  ggplot()+
+  geom_density(aes(x = child, color = "child", fill = "child"), alpha = 0.1) +
+  geom_density(aes(x = not_child, color = "not_child", fill = "not_child"), alpha = 0.1) +
+  labs(x = "Number of Votes for Each Type per Person", y = "Density", title = "Distributions of Responses") +
+  theme_classic()
+
+
+## Making violin dotplots to see discrete people
+encoding %>% 
+  group_by(subject, imagetype_vote) %>% 
+  tally() %>% 
+  pivot_wider(names_from = imagetype_vote, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  select(subject, child, not_child) %>% 
+  reshape2::melt() %>%
+  ggplot(aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot(notch = TRUE, alpha  = .5, outlier.shape = NA) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=1.7, binwidth = .9999999, stackratio=1.8, alpha = .9)+
+  labs(x = "Response", y = "Number of Votes of Each Type", title = "Distributions of Responses") +
+  scale_fill_discrete(name = "Column") +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+
+# Prepping recall dataframe and looking at distributions
+
+```{r}
+recall <- stim %>% 
+  filter(str_detect(trialcode, "rating")) %>% 
+  mutate(memory = recode(response,
+                         `0` = "definitely_old",
+                         `1` = "maybe_old",
+                         `2` = "maybe_new",
+                         `3` = "definitely_new"))
+
+#Looking at distributions
+recall %>% 
+  group_by(subject, memory) %>% 
+  tally() %>% 
+  pivot_wider(names_from = memory, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  select(subject, definitely_old, maybe_old, maybe_new, definitely_new) %>% 
+  reshape2::melt() %>%
+  ggplot(aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot(notch = TRUE, alpha  = .5, outlier.shape = NA) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=1.5, binwidth = 4.9999999, stackratio=1.7, alpha = .9)+
+  labs(x = "Response", y = "Number of Votes per Image", title = "Distributions of Responses") +
+  scale_fill_discrete(name = "Column") +
+  scale_y_continuous(limits = c(0,475), 
+                     breaks = c(0,100,200,300,400,473))+
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+
+# Merge dataframes and count hits, misses, etc. 
+
+```{r}
+stimuli_alltrials <- encoding %>% 
+  select(subject, stimulusitem1, imagetype_vote) %>% 
+  right_join(recall, by = c("subject", "stimulusitem1")) %>% 
+  mutate(general = case_when(
+    !is.na(imagetype_vote) & str_detect(memory, "old") ~ "general_hit",
+    is.na(imagetype_vote) & str_detect(memory, "old") ~ "general_fa",
+    !is.na(imagetype_vote) & str_detect(memory, "new") ~ "general_miss",
+    is.na(imagetype_vote) & str_detect(memory, "new") ~ "general_cr",
+    TRUE ~ NA_character_
+  )) %>% 
+  mutate(highconfidence = case_when(
+    !is.na(imagetype_vote) & memory == "definitely_old" ~ "highconfidence_hit",
+    is.na(imagetype_vote) & !str_detect(memory, "definitely_new") ~ "highconfidence_fa",
+    !is.na(imagetype_vote) & !str_detect(memory, "definitely_old") ~ "highconfidence_miss",
+    is.na(imagetype_vote) & memory == "definitely_new" ~ "highconfidence_cr",
+    TRUE ~ NA_character_
+  ))
+```
+
+
+# Add dprime scores
+
+```{r}
+## General dprime
+general_counts <- stimuli_alltrials %>%
+  count(stimulusitem1, general) %>%
+  pivot_wider(names_from = general, values_from = n, values_fill = 0) %>% 
+  mutate(general_dprime = psycho::dprime(general_hit, general_fa, general_miss, general_cr)$dprime) %>% 
+  select(stimulusitem1, general_dprime)%>% 
+  rename(image_name = stimulusitem1)
+
+## Threshold high confidence (unless endorsed with confidence, its a miss/false alarm)
+highconfidence_counts <- stimuli_alltrials %>%
+  count(stimulusitem1, highconfidence) %>%
+  pivot_wider(names_from = highconfidence, values_from = n, values_fill = 0) %>% 
+  mutate(highconfidence_treshold_dprime = 
+           psycho::dprime(highconfidence_hit, highconfidence_fa, highconfidence_miss, highconfidence_cr)$dprime) %>% 
+  select(stimulusitem1, highconfidence_treshold_dprime)%>% 
+  rename(image_name = stimulusitem1)
+
+## Subset high confidence (calculate with only trials that were endorsed with high confidence)
+subsethighconfidence_counts <- stimuli_alltrials %>%
+  filter(str_detect(memory, "definitely")) %>% 
+  count(stimulusitem1, highconfidence) %>%
+  pivot_wider(names_from = highconfidence, values_from = n, values_fill = 0, names_prefix = "subset") %>% 
+  mutate(highconfidence_subset_dprime = 
+           psycho::dprime(subsethighconfidence_hit, subsethighconfidence_fa, 
+                          subsethighconfidence_miss, subsethighconfidence_cr)$dprime) %>% 
+  select(stimulusitem1, highconfidence_subset_dprime)%>% 
+  rename(image_name = stimulusitem1)
+```
+
+
+# Make counts of votes for each image (single vs. double; child vs. no child)
+
+```{r}
+rating_counts <- encoding %>% 
+  count(stimulusitem1, imagetype_vote) %>%
+  pivot_wider(names_from = imagetype_vote, values_from = n, values_fill = 0) %>% 
+  mutate(pct_endorsed_child = child/(child+not_child)) %>%
+  mutate(across(everything(), ~ replace(., is.nan(.), NA))) %>% 
+  select(stimulusitem1, pct_endorsed_child) %>% 
+  rename(image_name = stimulusitem1)
+```
+
+# Load in demographic info
+
+```{r}
+face_info <- read.csv(file.choose()) %>% 
+  select(image_name, gender, race, age_group, age_rating,
+         contains("ISSUES")) %>% 
+  rename(type = race)
+```
+
+# Merge all data frames
+
+```{r}
+## Make list of dataframes
+data_frames <- list(rating_counts, general_counts, highconfidence_counts, subsethighconfidence_counts)
+
+## Join, make new variable, and reorder
+stimuli <- reduce(data_frames, full_join, by = "image_name") %>% 
+  left_join(face_info, by = "image_name") %>% 
+  mutate(image_type = paste(gender, type, sep = "_")) %>% 
+  select(image_name, image_type, gender, type, everything()) 
+```
+
+### ok going to try to reload in updated file (051224)
+
+```{r}
+stimuli.work<-read.csv(file.choose())
+
+# look at distributions
+stimuli.work %>% 
+  ggplot()+
+  geom_density(aes(x = pct_endorsed_child, color = "pct_endorsed_child", fill = "pct_endorsed_child"), 
+               alpha = 0.1, na.rm = TRUE) +
+  labs(x = "Value", y = "Density", title = "Percent Endorsed") +
+  theme_classic()
+
+## Distribution of different d' memorability scores accross all images
+stimuli.work %>% 
+  ggplot()+
+  geom_density(aes(x = general_dprime, 
+                   color = "general_dprime", fill = "general_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  geom_density(aes(x = highconfidence_treshold_dprime, 
+                   color = "highconfidence_treshold_dprime", fill = "highconfidence_treshold_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  geom_density(aes(x = highconfidence_subset_dprime, 
+                   color = "highconfidence_subset_dprime", fill = "highconfidence_subset_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  labs(x = "d'", y = "Density", title = "Memorability (d')") +
+  theme_classic()
+```
+
+
+## Create a list of variable names to use in correlation plots
+```{r}
+dprime_list <- c("general_dprime", "highconfidence_treshold_dprime", "highconfidence_subset_dprime")
+
+## Distribution of memorability scores across genders
+#for (variable in dprime_list) {
+#  plot <- stimuli %>% 
+#    ggplot(aes(x=!!sym(variable), fill=gender)) +
+#    geom_density(alpha=0.2)+
+#    theme_classic()
+#  print(plot)
+```
+
+
+# Filtering out memorability outliers
+Remove anyone two standard deviations away on any of our d' scores. 
+
+```{r}
+## Filter: keep anything where difference from mean does not exceed 2 SDs
+contenders <- stimuli.work %>%
+  filter(general_dprime > 0) %>%  ## NEW
+  filter(abs(general_dprime - mean(general_dprime)) <= 2 * sd(general_dprime),
+         abs(highconfidence_treshold_dprime - mean(highconfidence_treshold_dprime)) <= 2 * sd(highconfidence_treshold_dprime),
+         abs(highconfidence_subset_dprime - mean(highconfidence_subset_dprime)) <= 2 * sd(highconfidence_subset_dprime)) 
+
+
+## How many of each are left? 
+table(contenders$door_or_face)
+sort(table(contenders$image_type), decreasing = TRUE)
+
+## This group has a wide range of child endorsement (mean __ endorse child)
+summary(contenders$pct_endorsed_child)
+
+## How many of each color door? 
+contenders %>% 
+  filter(door_or_face == "face") %>% 
+  group_by(type) %>% 
+  summarise(n = n()) %>% 
+  arrange(-n) %>% View()
+```
+
+
+
+# Picking faces more highly endorsed as looking like child (9-13 y/o)
+
+Now that we have gotten rid of images that are either too memorable or not memorable enough, 
+let's pick faces who look most like child of our target age range within each group. 
+When we need tie breakers, let's remove faces that had more SDN endorsement of looking fake, and/or any other issues
+
+```{r}
+## Filtering top 11 most child faces per group, using SDN ratings and relative high or low dprime as tiebreakers
+face_contenders <- contenders %>% 
+  filter(door_or_face == "face") %>% 
+  group_by(image_type) %>%
+  top_n(11, pct_endorsed_child) %>% ## NEW
+  top_n(11, -ISSUES_lookfake) %>% ## NEW
+  arrange(desc(pct_endorsed_child), ISSUES_SUM) %>% 
+  slice_head(n = 11) %>% ## NEW
+  ungroup() %>% 
+    arrange(desc(general_dprime)) %>% ## NEW
+  slice_head(n = 86) %>% ## NEW
+  slice_tail(n = 84) ## NEW
+
+## Should have 10-11 of each by now
+table(face_contenders$image_type)
+table(face_contenders$gender)
+
+## Mean child before and after
+#contenders %>% ## BEFORE
+face_contenders %>% ## AFTER
+  filter(door_or_face == "face") %>% 
+  group_by(image_type) %>% 
+  summarize(pct_endorsed_child = mean(pct_endorsed_child))
+
+## Very few images now have any endorsement from us about looking fake 
+table(face_contenders$image_type, face_contenders$ISSUES_lookfake)
+```
+
+# Looking at some new distributions
+
+```{r}
+## Distribution of memorability scores across genders
+for (variable in dprime_list) {
+  plot <- face_contenders %>% 
+    ggplot(aes(x=!!sym(variable), fill=gender)) +
+    geom_density(alpha=0.2)+
+    theme_classic()
+  print(plot)
+}
+
+## Amoung those we kept, did initial age group seem to make a difference
+face_contenders %>% 
+  ggplot(aes(x=pct_endorsed_child, fill=age_group)) +
+  geom_density(alpha=0.2)+
+  theme_classic()
+```
+
+
+# Any differences in memorability between gender? 
+
+
+```{r}
+## General d'
+var.test(face_contenders$general_dprime ~ face_contenders$gender, paired = FALSE) 
+t.test(face_contenders$general_dprime ~ face_contenders$gender, paired = FALSE, var.equal = TRUE) 
+
+## Threshold high confidence
+var.test(face_contenders$highconfidence_treshold_dprime ~ face_contenders$gender, paired = FALSE) 
+t.test(face_contenders$highconfidence_treshold_dprime ~ face_contenders$gender, paired = FALSE, var.equal = TRUE)  
+
+## Subset high confidence
+var.test(face_contenders$highconfidence_subset_dprime ~ face_contenders$gender, paired = FALSE) 
+t.test(face_contenders$highconfidence_subset_dprime ~ face_contenders$gender, paired = FALSE, var.equal = TRUE)
+```
+
+# Let's prepare to match with the doors now!
+
+```{r}
+## Merge back in just our door contenders, and make our "treatment" variable
+contenders_facesfinalized <- contenders %>% 
+  filter(door_or_face == "door") %>% 
+  rbind(face_contenders) %>% 
+  mutate(door0_or_face1 = case_when(
+    door_or_face == "door" ~ 0, 
+    door_or_face == "face" ~ 1, 
+  ))
+
+## Make sure this is coded right
+table(contenders_facesfinalized$door_or_face, contenders_facesfinalized$door0_or_face1)
+
+## Which types should we match to make sure we have an equal number of each?
+## Median of each
+contenders_facesfinalized %>% 
+  group_by(gender) %>% 
+  summarize(general_dprime = median(general_dprime), 
+            highconfidence_treshold_dprime = median(highconfidence_treshold_dprime),
+            highconfidence_subset_dprime = median(highconfidence_subset_dprime))
+
+## Plotting distributions of all memorability
+for (variable in dprime_list) {
+  
+  plot <- contenders_facesfinalized %>% 
+    ggplot(aes(x=!!sym(variable))) +
+    geom_histogram(binwidth=.19999, color="black", fill="thistle1") +
+  facet_wrap(vars(gender))+
+    theme_classic()
+  
+  print(plot)
+}
+
+```
+
+
+# Pairing genders to ensure even groups
+
+```{r}
+contenders_facesfinalized_girlsingle <- contenders_facesfinalized %>% filter(gender %in% c("girls", "single"))
+contenders_facesfinalized_girldouble <- contenders_facesfinalized %>% filter(gender %in% c("girls", "double"))
+contenders_facesfinalized_boysingle <- contenders_facesfinalized %>% filter(gender %in% c("boys", "single"))
+contenders_facesfinalized_boydouble <- contenders_facesfinalized %>% filter(gender %in% c("boys", "double"))
+```
+
+# Matching method 1
+Note: nearest matching works perfectly fine 
+
+```{r}
+## Set up matching
+match_object_girlsingle <- matchit(door0_or_face1 ~ general_dprime + highconfidence_treshold_dprime + highconfidence_subset_dprime,
+                                    data = contenders_facesfinalized_girlsingle,
+                                    #caliper = 0.57, ##NEW, used to be .55
+                                    method = "nearest")
+
+## Make new dataframe
+matched_data_girlsingle <- match.data(match_object_girlsingle) %>% 
+  arrange(door_or_face, image_type) %>% 
+  mutate(use = "task")
+
+## Should have _ per gender. YAY!!!
+table(matched_data_girlsingle$gender)
+```
+
+# do the same matching with boys and double doors
+
+```{r}
+## Set up matching
+match_object_boydouble <- matchit(door0_or_face1 ~ general_dprime + highconfidence_treshold_dprime + highconfidence_subset_dprime,
+                                  data = contenders_facesfinalized_boydouble,
+                                  #caliper = 0.57,##NEW, used to be .55
+                                  method = "nearest")
+
+## Make new dataframe
+matched_data_boydouble <- match.data(match_object_boydouble) %>% 
+  arrange(door_or_face, image_type) %>% 
+  mutate(use = "task")
+
+## Should have 42 per gender 
+table(matched_data_boydouble$gender)
+```
+
+
+# OK not just binding together girl_single and boy_double
+
+```{r}
+## Binding two matched dataframes together
+matched_data_girlsingle_boydouble <- matched_data_girlsingle %>% rbind(matched_data_boydouble)
+
+## What is the overall distance
+summary(matched_data_girlsingle_boydouble$distance)
+table(matched_data_girlsingle_boydouble$door_or_face, matched_data_girlsingle_boydouble$type)
+```
+
+#looking at confidence intervals and d prime stuff
+
+```{r}
+## General d'
+var.test(general_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE) #
+t.test(general_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE, var.equal = TRUE) #
+
+## Threshold high confidence
+var.test(highconfidence_treshold_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE) #
+t.test(highconfidence_treshold_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE, var.equal = TRUE) #
+
+## Subset high confidence
+var.test(highconfidence_subset_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE) #
+t.test(highconfidence_subset_dprime ~ door_or_face, data = matched_data_girlsingle_boydouble, paired = FALSE, var.equal = TRUE) #
+```
+
+
+
+```{r}
+summary(aov(general_dprime ~ gender, data = matched_data_girlsingle_boydouble))
+kruskal.test(general_dprime ~ gender, data = matched_data_girlsingle_boydouble)
+
+summary(aov(highconfidence_treshold_dprime ~ gender, data = matched_data_girlsingle_boydouble))
+kruskal.test(highconfidence_treshold_dprime ~ gender, data = matched_data_girlsingle_boydouble)
+
+summary(aov(highconfidence_subset_dprime ~ gender, data = matched_data_girlsingle_boydouble))
+kruskal.test(highconfidence_subset_dprime ~ gender, data = matched_data_girlsingle_boydouble)
+```
+
+
+# Looking at final distributions
+
+```{r}
+## NOTE: to compare with old distributions, change dataframe to "stimuli.work"
+
+for (variable in dprime_list) {
+  plot <- matched_data_girlsingle_boydouble %>% 
+    ggplot(aes(x=!!sym(variable), fill=door_or_face)) +
+    geom_density(alpha=0.2)+
+    theme_classic()
+  print(plot)
+}
+
+## Distribution of different d' memorability scores across all images
+matched_data_girlsingle_boydouble %>% 
+  ggplot()+
+  geom_density(aes(x = general_dprime, 
+                   color = "general_dprime", fill = "general_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  geom_density(aes(x = highconfidence_treshold_dprime, 
+                   color = "highconfidence_treshold_dprime", fill = "highconfidence_treshold_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  geom_density(aes(x = highconfidence_subset_dprime, 
+                   color = "highconfidence_subset_dprime", fill = "highconfidence_subset_dprime"), 
+               alpha = 0.1, na.rm = TRUE) +
+  labs(x = "d'", y = "Density", title = "Memorability (d')") +
+  theme_classic()+
+  xlim(-3,3)
+
+summary(matched_data_girlsingle_boydouble$general_dprime)
+summary(stimuli.work$general_dprime)
+```
+
+table(matched_data_girlsingle_boydouble$image_type)
+table(matched_data_girlsingle_boydouble$door_or_face)
+
+
