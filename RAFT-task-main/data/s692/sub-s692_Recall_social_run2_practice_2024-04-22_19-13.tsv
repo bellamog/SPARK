@@ -1,0 +1,10 @@
+onset	duration	trial_type	rt	resp	selection	gender	image	image_type
+0.0	1.0	ISI	n/a	n/a	n/a	n/a	n/a	n/a
+1.018863799981773	2.750355900032446	decision_social	1.9426937999669462	9	recall_win	P	P_MF901.jpg	white
+3.769527000025846	2.0136420999187976	ISI	n/a	n/a	n/a	P	P_MF901.jpg	white
+5.786595499957912	2.7519355000695214	decision_social	1.89189259998966	3	predict_loss	P	P_FF901.jpg	asian
+8.538832999998704	2.0109964000293985	ISI	n/a	n/a	n/a	P	P_FF901.jpg	asian
+10.553197599947453	2.7504064000677317	decision_social	1.7412392999976873	8	recall_loss	P	P_MF902.jpg	latino
+13.303909500013106	2.0126517999451607	ISI	n/a	n/a	n/a	P	P_MF902.jpg	latino
+15.319972999976017	2.750976199982688	decision_social	1.3250034999800846	3	predict_loss	P	P_FF902.jpg	latino
+18.07124990003649	2.0118748999666423	ISI	n/a	n/a	n/a	P	P_FF902.jpg	latino

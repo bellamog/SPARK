@@ -1,0 +1,14 @@
+onset	duration	trial_type	rt	resp	selection	gender	image_left	image_right	image_left_type	image_right_type
+0.0	1.0	ITI	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a
+1.022009700012859	2.5021581999608316	decision_monetary_win	1.9893424999900162	2	right	P	P_DD901.jpg	P_DD902.jpg	brown	green
+3.5243364999769256	1.0092755000223406	ISI	n/a	n/a	n/a	P	P_DD901.jpg	P_DD902.jpg	brown	green
+4.5336824000114575	1.0159125999780372	feedback_monetary_win_positive	n/a	n/a	n/a	P	P_DD901.jpg	P_DD902.jpg	brown	green
+5.54971160000423	2.0166496000019833	ITI	n/a	n/a	n/a	P	P_DD901.jpg	P_DD902.jpg	brown	green
+7.583518899977207	2.5018489999929443	decision_monetary_loss	2.2946302000200376	7	left	P	P_SD901.jpg	P_SD902.jpg	yellow	brown
+10.085558399965521	1.0148519999929704	ISI	n/a	n/a	n/a	P	P_SD901.jpg	P_SD902.jpg	yellow	brown
+11.100480999972206	1.0164044999983162	feedback_monetary_loss_neutral	n/a	n/a	n/a	P	P_SD901.jpg	P_SD902.jpg	yellow	brown
+12.117012100003194	2.0167841999791563	ITI	n/a	n/a	n/a	P	P_SD901.jpg	P_SD902.jpg	yellow	brown
+14.141909400001168	2.5021569000091404	decision_monetary_win	1.518900399969425	2	right	P	P_DD903.jpg	P_DD904.jpg	brown	brown
+16.644211500009988	1.0053595999488607	ISI	n/a	n/a	n/a	P	P_DD903.jpg	P_DD904.jpg	brown	brown
+17.64964219997637	1.0000034000258893	feedback_monetary_win_neutral	n/a	n/a	n/a	P	P_DD903.jpg	P_DD904.jpg	brown	brown
+18.649762099958025	2.0164449000149034	ITI	n/a	n/a	n/a	P	P_DD903.jpg	P_DD904.jpg	brown	brown

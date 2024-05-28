@@ -1,0 +1,10 @@
+onset	duration	trial_type	rt	resp	selection	gender	image_left	image_right	image_left_type	image_right_type
+0.0	1.0	ITI	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a
+1.0242894999973942	2.5005316000024322	decision_monetary_loss	0.6529518000024837	7	left	D	DD015.jpg	DD016.jpg	blue	brown
+3.5253854999973555	0.5075804000007338	ISI	n/a	n/a	n/a	D	DD015.jpg	DD016.jpg	blue	brown
+4.033023099997081	1.016120400003274	feedback_monetary_loss_neutral	n/a	n/a	n/a	D	DD015.jpg	DD016.jpg	blue	brown
+5.049248299997998	1.0003403000009712	ITI	n/a	n/a	n/a	D	DD015.jpg	DD016.jpg	blue	brown
+6.0648492999971495	2.5009920000011334	decision_monetary_win	0.6966212000043015	2	right	S	SD023.jpg	SD024.jpg	blue	blue
+8.565993199998047	1.000211099999433	ISI	n/a	n/a	n/a	S	SD023.jpg	SD024.jpg	blue	blue
+9.566262000000279	1.0161284999994677	feedback_monetary_win_neutral	n/a	n/a	n/a	S	SD023.jpg	SD024.jpg	blue	blue
+10.582485600003565	3.0005097999965074	ITI	n/a	n/a	n/a	S	SD023.jpg	SD024.jpg	blue	blue

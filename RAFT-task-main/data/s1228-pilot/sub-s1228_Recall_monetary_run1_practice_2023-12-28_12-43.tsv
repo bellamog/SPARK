@@ -1,0 +1,10 @@
+onset	duration	trial_type	rt	resp	selection	gender	image	image_type
+0.0	1.0	ISI	n/a	n/a	n/a	n/a	n/a	n/a
+1.0191534999758005	2.7636686998885125	decision_monetary_MISSED	missed	missed	missed	P	P_DD901.jpg	brown
+3.7829481998924166	2.016421400010586	ISI	n/a	n/a	n/a	P	P_DD901.jpg	brown
+5.8186143999919295	2.7503386000171304	decision_monetary	1.1150749998632818	9	predict_win	P	P_DD902.jpg	green
+8.569093900034204	2.0135997999459505	ISI	n/a	n/a	n/a	P	P_DD902.jpg	green
+10.585987800033763	2.7515572998672724	decision_monetary	1.9479231999721378	4	recall_neutral	P	P_SD901.jpg	yellow
+13.337682799901813	2.011622100137174	ISI	n/a	n/a	n/a	P	P_SD901.jpg	yellow
+15.352563499938697	2.751963600050658	decision_monetary	2.3471719999797642	8	predict_loss	P	P_SD902.jpg	brown
+18.104661899851635	2.0114339001011103	ISI	n/a	n/a	n/a	P	P_SD902.jpg	brown

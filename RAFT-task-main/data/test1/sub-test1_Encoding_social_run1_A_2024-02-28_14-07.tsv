@@ -1,0 +1,6 @@
+onset	duration	trial_type	rt	resp	selection	gender	image_left	image_right	image_left_type	image_right_type
+0.0	1.0	ITI	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a
+1.024369000000661	2.5006011000004946	decision_social_loss	0.5710151000002952	7	left	M	MF015.jpg	MF016.jpg	black	asian
+3.5251545000010083	0.511228299999857	ISI	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian
+4.0364417000000685	1.0001160000010714	feedback_social_loss_neutral	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian
+5.036680100000012	1.0014403000004677	ITI	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian

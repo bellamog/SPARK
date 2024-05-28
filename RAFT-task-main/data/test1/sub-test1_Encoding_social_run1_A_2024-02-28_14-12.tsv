@@ -1,0 +1,14 @@
+onset	duration	trial_type	rt	resp	selection	gender	image_left	image_right	image_left_type	image_right_type
+0.0	1.0	ITI	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a
+1.0250462000003608	2.50148050000098	decision_social_loss	0.5522746999995434	7	left	M	MF015.jpg	MF016.jpg	black	asian
+3.52671250000094	0.50623110000015	ISI	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian
+4.03299750000042	1.0167815000004339	feedback_social_loss_neutral	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian
+5.0498852000000625	1.016377600000851	ITI	n/a	n/a	n/a	M	MF015.jpg	MF016.jpg	black	asian
+6.074840799999947	2.5013037999997323	decision_social_win	0.3528428999998141	2	right	F	FF023.jpg	FF024.jpg	white	asian
+8.57630430000063	1.006626000000324	ISI	n/a	n/a	n/a	F	FF023.jpg	FF024.jpg	white	asian
+9.582986600000368	1.0165787000005366	feedback_social_win_neutral	n/a	n/a	n/a	F	FF023.jpg	FF024.jpg	white	asian
+10.599656500000492	3.0165863999991416	ITI	n/a	n/a	n/a	F	FF023.jpg	FF024.jpg	white	asian
+13.62418930000058	2.500595899999098	decision_social_win	1.5692421999992803	7	left	M	MF041.jpg	MF042.jpg	white	asian
+16.12493540000105	2.0080230999992636	ISI	n/a	n/a	n/a	M	MF041.jpg	MF042.jpg	white	asian
+18.133020700000998	1.0165880000004108	feedback_social_win_positive	n/a	n/a	n/a	M	MF041.jpg	MF042.jpg	white	asian
+19.149737300000197	4.016440600000351	ITI	n/a	n/a	n/a	M	MF041.jpg	MF042.jpg	white	asian

@@ -1,0 +1,6 @@
+onset	duration	trial_type	rt	resp	selection	gender	image	image_type
+0.0	1.0	ISI	n/a	n/a	n/a	n/a	n/a	n/a
+1.0192908000317402	2.751679199980572	decision_social	0.6249345999676734	8	recall_loss	M	MF028.jpg	black
+3.771273599995766	1.5119626000523567	ISI	n/a	n/a	n/a	M	MF028.jpg	black
+5.286955400020815	2.7520609999774024	decision_social	0.4563659999985248	2	predict_win	F	FF021.jpg	black
+8.039318200026173	1.0105989999719895	ISI	n/a	n/a	n/a	F	FF021.jpg	black
