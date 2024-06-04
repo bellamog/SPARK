@@ -267,6 +267,7 @@ def do_run(stimset, vers, run):
 
     #set Version ITI, Image orders, feedback order
     pic_path = os.path.join(os.getcwd(), 'pictureFolder', f'{stimset}NEW',)
+    #from Labeled to NEW
 
     ## Preload all of the images, ISIs, ITIs for this trial
     if task_type == "Encoding":
@@ -277,13 +278,13 @@ def do_run(stimset, vers, run):
         pic_L_list = [visual.ImageStim(win,
                                  img, 
                                  pos =(-0.3,0), 
-                                 #went from 0.85 to 0.7, and 0.4 to 0.45
-                                 size=(0.45,0.70)) for img in pic_L_image_list]
+                                 #0.85 to 0.7
+                                 size=(0.4,0.70)) for img in pic_L_image_list]
         pic_R_list = [visual.ImageStim(win,
                                  img, 
-                                 pos =(0.3,0), 
-                                 #went from 0.85 to 0.7, and 0.4 to 0.45
-                                 size=(0.45,0.70)) for img in pic_R_image_list]
+                                 pos =(0.3,0),
+                                 #0.85 to 0.7
+                                 size=(0.4,0.70)) for img in pic_R_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'{vers}_ISI']
         list_iti = reference.loc[reference.index[indices_ITI], f'{vers}_ITI']
         ## How long the feedback is visible for 
