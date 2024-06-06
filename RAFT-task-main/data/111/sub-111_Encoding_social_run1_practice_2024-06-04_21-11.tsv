@@ -1,0 +1,10 @@
+onset	duration	trial_type	rt	resp	selection	gender	image_left	image_right	image_left_type	image_right_type
+0.0	1.0	ITI	n/a	n/a	n/a	n/a	n/a	n/a	n/a	n/a
+1.0252312999946298	2.501621999996132	decision_social_win	1.7035224999999627	7	left	P	P_MF901.jpg	P_MF902.jpg	white	latino
+3.5270481999905314	1.0064783999987412	ISI	n/a	n/a	n/a	P	P_MF901.jpg	P_MF902.jpg	white	latino
+4.533583799988264	1.0161140999989584	feedback_social_win_positive	n/a	n/a	n/a	P	P_MF901.jpg	P_MF902.jpg	white	latino
+5.549783899987233	2.0000652000017	ITI	n/a	n/a	n/a	P	P_MF901.jpg	P_MF902.jpg	white	latino
+7.564042899990454	2.5018565000063973	decision_social_loss	1.4297002000093926	2	right	P	P_FF901.jpg	P_FF902.jpg	asian	latino
+10.06605279998621	1.0007152000034694	ISI	n/a	n/a	n/a	P	P_FF901.jpg	P_FF902.jpg	asian	latino
+11.066826799986302	1.016132100005052	feedback_social_loss_neutral	n/a	n/a	n/a	P	P_FF901.jpg	P_FF902.jpg	asian	latino
+12.083047199994326	2.0004384000058053	ITI	n/a	n/a	n/a	P	P_FF901.jpg	P_FF902.jpg	asian	latino
