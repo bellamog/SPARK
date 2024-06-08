@@ -266,7 +266,7 @@ def do_run(stimset, vers, run):
 
 
     #set Version ITI, Image orders, feedback order
-    pic_path = os.path.join(os.getcwd(), 'pictureFolder', f'{stimset}Labelled',)
+    pic_path = os.path.join(os.getcwd(), 'pictureFolder', f'{stimset}NEW',)
 
     ## Preload all of the images, ISIs, ITIs for this trial
     if task_type == "Encoding":
@@ -276,12 +276,14 @@ def do_run(stimset, vers, run):
         pic_R_image_list = [os.path.join(pic_path, pic_name) for pic_name in pic_R_image_name]
         pic_L_list = [visual.ImageStim(win,
                                  img, 
-                                 pos =(-0.3,0), 
-                                 size=(0.4,0.85)) for img in pic_L_image_list]
+                                 pos =(-0.3,0),
+                                 #from 0.85 to 0.7
+                                 size=(0.4,0.7)) for img in pic_L_image_list]
         pic_R_list = [visual.ImageStim(win,
                                  img, 
                                  pos =(0.3,0), 
-                                 size=(0.4,0.85)) for img in pic_R_image_list]
+                                 #adjusted
+                                 size=(0.4,0.7)) for img in pic_R_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'{vers}_ISI']
         list_iti = reference.loc[reference.index[indices_ITI], f'{vers}_ITI']
         ## How long the feedback is visible for 
@@ -295,7 +297,8 @@ def do_run(stimset, vers, run):
         pic_list = [visual.ImageStim(win,
                                img, 
                                pos =(0,0), 
-                               size=(0.4,0.85)) for img in pic_image_list]
+                               #adjusted
+                               size=(0.4,0.7)) for img in pic_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'{vers}_isi']
         pic_type = reference.loc[reference.index[indices_stims], f'{vers}_{stimset}_type']
     elif task_type == "Recall" and vers != "practice":
@@ -304,7 +307,7 @@ def do_run(stimset, vers, run):
         pic_list = [visual.ImageStim(win,
                                img, 
                                pos =(0,0), 
-                               size=(0.4,0.85)) for img in pic_image_list]
+                               size=(0.4,0.7)) for img in pic_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'isi']
         pic_type = reference.loc[reference.index[indices_stims], f'{stimset}_type']
 
