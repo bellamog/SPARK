@@ -298,7 +298,7 @@ def do_run(stimset, vers, run):
         pic_list = [visual.ImageStim(win,
                                img, 
                                pos =(0,0), 
-                               size=(0.4,0.85)) for img in pic_image_list]
+                               size=(0.4,0.70)) for img in pic_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'{vers}_isi']
         pic_type = reference.loc[reference.index[indices_stims], f'{vers}_{stimset}_type']
     elif task_type == "Recall" and vers != "practice":
@@ -307,7 +307,7 @@ def do_run(stimset, vers, run):
         pic_list = [visual.ImageStim(win,
                                img, 
                                pos =(0,0), 
-                               size=(0.4,0.85)) for img in pic_image_list]
+                               size=(0.4,0.70)) for img in pic_image_list]
         list_isi = reference.loc[reference.index[indices_ISI], f'isi']
         pic_type = reference.loc[reference.index[indices_stims], f'{stimset}_type']
 
