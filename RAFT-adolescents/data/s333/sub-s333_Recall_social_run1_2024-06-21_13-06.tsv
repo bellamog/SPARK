@@ -1,0 +1,4 @@
+onset	duration	trial_type	rt	resp	selection	gender	image	image_type
+0.0	1.0	ISI	n/a	n/a	n/a	n/a	n/a	n/a
+1.0180020998232067	2.750417800154537	decision_social	0.5246517001651227	7	recall_neutral	M	MF023.jpg	black
+3.768700399901718	2.763780999928713	ISI	n/a	n/a	n/a	M	MF023.jpg	black
