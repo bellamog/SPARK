@@ -34,13 +34,13 @@ library(MatchIt) ## Matching with caliper
 ```{r}
 
 ## Set path
-path <- "/Users/bellamoger/Documents/SPARK/"
+path <- "/Users/bellamoger/Documents/GitHub/SPARK/"
 
 ## Load in
 stim <- read.csv(paste0(path, "elizabetheberts_adolescent_faces_r01_faceratings_raw_2404041231.csv"))
 
 ## Investigate the variables we kept
-skim(stim)
+summary(stim)
 ```
 
 
@@ -67,6 +67,9 @@ encoding %>%
 
 
 ## Making violin dotplots to see discrete people
+
+library(reshape2)
+
 encoding %>% 
   group_by(subject, imagetype_vote) %>% 
   tally() %>% 
