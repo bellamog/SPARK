@@ -137,7 +137,7 @@ rating_counts <- encoding %>%
 
 
 #how many faces looked OLDER than 9-13? 
-#check for 14 and 15 year olds (age_rating)
+#check for >13 year olds (age_rating)
 ```{r}
 
 
