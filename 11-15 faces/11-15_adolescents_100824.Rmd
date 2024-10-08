@@ -12,19 +12,144 @@ knitr::opts_chunk$set(echo = TRUE)
 
 rm(list=ls())
 
+# Load Packages
+```{r}
+library(tidyverse)## Always load tidyverse
+library(skimr) ## Used to summarize our dataframe
+library(corrplot) ## correlograms
+library(psycho) ## dprime
+#install.packages("MatchIt")
+library(MatchIt) ## Matching with caliper
+```
 
-#remove any faces that we used before (MANUALLY?)... load in that file
 
+#load in data
+```{r}
+
+## Set path
+path <- "/Users/bellamoger/Documents/GitHub/SPARK/"
+
+## Load in
+stim <- read.csv(paste0(path, "elizabetheberts_adolescent_faces_r01_faceratings_raw_2404041231.csv"))
+
+## Investigate the variables we kept
+summary(stim)
+
+```
+
+# Prepping encoding dataframe and looking at distributions
+
+```{r}
+encoding <- stim %>%
+  filter(trialcode == "encoding") %>%
+  mutate(imagetype_vote = recode(response,
+                                 `33` = "child",
+                                 `36` = "not_child"))
+
+## Looking at distributions
+encoding %>% 
+  group_by(subject, imagetype_vote) %>% 
+  tally() %>% 
+  pivot_wider(names_from = imagetype_vote, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  ggplot()+
+  geom_density(aes(x = child, color = "child", fill = "child"), alpha = 0.1) +
+  geom_density(aes(x = not_child, color = "not_child", fill = "not_child"), alpha = 0.1) +
+  labs(x = "Number of Votes for Each Type per Person", y = "Density", title = "Distributions of Responses") +
+  theme_classic()
+
+
+## Making violin dotplots to see discrete people
+
+library(reshape2)
+
+encoding %>% 
+  group_by(subject, imagetype_vote) %>% 
+  tally() %>% 
+  pivot_wider(names_from = imagetype_vote, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  select(subject, child, not_child) %>% 
+  reshape2::melt() %>%
+  ggplot(aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot(notch = TRUE, alpha  = .5, outlier.shape = NA) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=1.7, binwidth = .9999999, stackratio=1.8, alpha = .9)+
+  labs(x = "Response", y = "Number of Votes of Each Type", title = "Distributions of Responses") +
+  scale_fill_discrete(name = "Column") +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+
+# Prepping recall dataframe and looking at distributions
+
+```{r}
+recall <- stim %>% 
+  filter(str_detect(trialcode, "rating")) %>% 
+  mutate(memory = recode(response,
+                         `0` = "definitely_old",
+                         `1` = "maybe_old",
+                         `2` = "maybe_new",
+                         `3` = "definitely_new"))
+
+#Looking at distributions
+recall %>% 
+  group_by(subject, memory) %>% 
+  tally() %>% 
+  pivot_wider(names_from = memory, values_from = n) %>% 
+  mutate(across(everything(), replace_na, replace = 0)) %>% 
+  select(subject, definitely_old, maybe_old, maybe_new, definitely_new) %>% 
+  reshape2::melt() %>%
+  ggplot(aes(x = variable, y = value, fill = variable)) +
+  geom_boxplot(notch = TRUE, alpha  = .5, outlier.shape = NA) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize=1.5, binwidth = 4.9999999, stackratio=1.7, alpha = .9)+
+  labs(x = "Response", y = "Number of Votes per Image", title = "Distributions of Responses") +
+  scale_fill_discrete(name = "Column") +
+  scale_y_continuous(limits = c(0,475), 
+                     breaks = c(0,100,200,300,400,473))+
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+
+#divide per subject
+```{r}
+
+rating_counts <- encoding %>% 
+  count(stimulusitem1, imagetype_vote) %>%
+  pivot_wider(names_from = imagetype_vote, values_from = n, values_fill = 0) %>% 
+  mutate(pct_endorsed_child = child/(child+not_child)) %>%
+  mutate(across(everything(), ~ replace(., is.nan(.), NA))) %>% 
+  select(stimulusitem1, pct_endorsed_child) %>% 
+  rename(image_name = stimulusitem1)
+
+```
+
+
+#take previous data file created, and manually remove all faces that were used... load back in
 ```{r}
 
 
 
 ```
-
 #how many left? 
 
-#how many faces looked OLDER than 9-13?
-#goal age range = 11-15
+
+
+
+#how many faces looked OLDER than 9-13? 
+#check for 14 and 15 year olds (age_rating)
+```{r}
+
+
+```
+
+
+
+#11,12,13 not used?
+```{r}
+
+```
+#final # --> goal age range = 11-15 y/o
 
 
 
