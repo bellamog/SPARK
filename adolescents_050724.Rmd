@@ -264,7 +264,6 @@ dprime_list <- c("general_dprime", "highconfidence_treshold_dprime", "highconfid
 
 # Filtering out memorability outliers
 Remove anyone two standard deviations away on any of our d' scores. 
-
 ```{r}
 ## Filter: keep anything where difference from mean does not exceed 2 SDs
 contenders <- stimuli.work %>%
@@ -347,7 +346,6 @@ face_contenders %>%
 
 
 # Any differences in memorability between gender? 
-
 
 ```{r}
 ## General d'
