@@ -2,6 +2,7 @@
 title: "adolescent_050724"
 output: html_document
 date: "2024-05-07"
+author: Camille Johnston, edited by Bella Moger
 ---
 
 ```{r setup, include=FALSE}
