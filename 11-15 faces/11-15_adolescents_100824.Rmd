@@ -1,0 +1,33 @@
+---
+title: "11-13_adolescents_100824"
+author: "Bella moger"
+date: "2024-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+rm(list=ls())
+
+
+#remove any faces that we used before (MANUALLY?)... load in that file
+
+```{r}
+
+
+
+```
+
+#how many left? 
+
+#how many faces looked OLDER than 9-13?
+#goal age range = 11-15
+
+
+
+
+
+
