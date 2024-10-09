@@ -201,7 +201,10 @@ contenders <- stimuli.work %>%
 
 
 #I WANT TO DOWNLOAD THE "CONTENDERS"
+write.csv(stimuli.work,"contenders.csv")
 
+#location
+getwd()
 
 ## How many of each are left? 
 table(contenders$door_or_face)
