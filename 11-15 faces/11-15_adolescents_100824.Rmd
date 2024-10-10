@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #boys_asian = 20, boys_latino = 18, boys_black = 15, boys_white = 14 --> BOYS = 67
 #girls_asian = 12, girls_latino = 15, girls_black =14, girls_white = 16 --> GIRLS = 57
 
-##TOTAL = 124 faces remaining
+##TOTAL = 124 faces remaining --> need 84 faces that look between 11-15 y/o
 
 
 
@@ -81,7 +81,7 @@ stimuli.work %>%
 #check for >13 year olds (age_rating)
 ```{r}
 summary(stimuli.work)
-older <-subset(stimuli.work,age_rating>13)
+older <-subset(stimuli.work,age_rating>11)
 ```
 
 
