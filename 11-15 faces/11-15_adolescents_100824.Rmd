@@ -10,6 +10,27 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+#####STEPS I DID (10/08/24)
+
+#(1) Manually removed all the faces in the original "final_adolescent_faces.csv" from the full face csv ("stimuli_051224")
+#(2) Uploaded into R
+#(3) Look at distrubutions and memoribility across REMAINING faces
+#(4) How many faces OLDER than 13 (subsetted)
+#(5) Look at distrubutions
+#(6) Filter out memorability outliers and see how many left
+#(7) Download final faces as csv.
+
+##FINAL:
+
+#boys_asian = 20, boys_latino = 18, boys_black = 15, boys_white = 14 --> BOYS = 67
+#girls_asian = 12, girls_latino = 15, girls_black =14, girls_white = 16 --> GIRLS = 57
+
+##TOTAL = 124 faces remaining
+
+
+
+
+
 rm(list=ls())
 
 # Load Packages
@@ -118,7 +139,6 @@ contenders %>%
   summarise(n = n()) %>% 
   arrange(-n) %>% View()
 ```
-
 
 
 #final # --> goal age range = 11-15 y/o
