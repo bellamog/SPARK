@@ -5,6 +5,9 @@ date: "2024-10-08"
 output: html_document
 ---
 
+rm(list=ls())
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -28,10 +31,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ##TOTAL = 124 faces remaining --> need 84 faces that look between 11-15 y/o
 
 
-
-
-
-rm(list=ls())
 
 # Load Packages
 ```{r}
@@ -81,13 +80,13 @@ stimuli.work %>%
 #check for >13 year olds (age_rating)
 ```{r}
 summary(stimuli.work)
-older <-subset(stimuli.work,age_rating>11)
+older.new <-subset(stimuli.work,age_rating>10)
 ```
 
 
 # look at distributions
 ```{r}
-older %>% 
+older.new %>% 
   ggplot()+
   geom_density(aes(x = pct_endorsed_child, color = "pct_endorsed_child", fill = "pct_endorsed_child"), 
                alpha = 0.1, na.rm = TRUE) +
@@ -115,7 +114,7 @@ stimuli.work %>%
 Remove anyone two standard deviations away on any of our d' scores. 
 ```{r}
 ## Filter: keep anything where difference from mean does not exceed 2 SDs
-contenders <- stimuli.work %>%
+contenders_new <- older.new %>%
   filter(general_dprime > 0) %>%  ## NEW
   filter(abs(general_dprime - mean(general_dprime)) <= 2 * sd(general_dprime),
          abs(highconfidence_treshold_dprime - mean(highconfidence_treshold_dprime)) <= 2 * sd(highconfidence_treshold_dprime),
@@ -123,17 +122,17 @@ contenders <- stimuli.work %>%
 
 
 #I WANT TO DOWNLOAD THE "CONTENDERS"
-write.csv(stimuli.work,"contenders.csv")
+write.csv(stimuli.work,"contenders_new.csv")
 
 #location
 getwd()
 
 ## How many of each are left? 
-table(contenders$door_or_face)
-sort(table(contenders$image_type), decreasing = TRUE)
+table(contenders_new$door_or_face)
+sort(table(contenders_new$image_type), decreasing = TRUE)
 
 ## How many of each face? 
-contenders %>% 
+contenders_new %>% 
   filter(door_or_face == "face") %>% 
   group_by(type) %>% 
   summarise(n = n()) %>% 
