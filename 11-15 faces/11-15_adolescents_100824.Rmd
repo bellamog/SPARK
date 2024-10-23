@@ -114,7 +114,7 @@ stimuli.work %>%
 Remove anyone two standard deviations away on any of our d' scores. 
 ```{r}
 ## Filter: keep anything where difference from mean does not exceed 2 SDs
-contenders_new <- older.new %>%
+contenders_102224 <- older.new %>%
   filter(general_dprime > 0) %>%  ## NEW
   filter(abs(general_dprime - mean(general_dprime)) <= 2 * sd(general_dprime),
          abs(highconfidence_treshold_dprime - mean(highconfidence_treshold_dprime)) <= 2 * sd(highconfidence_treshold_dprime),
@@ -122,14 +122,14 @@ contenders_new <- older.new %>%
 
 
 #I WANT TO DOWNLOAD THE "CONTENDERS"
-write.csv(stimuli.work,"contenders_new.csv")
+write.csv(contenders_102224,"contenders_PLSSS.csv")
 
 #location
 getwd()
 
 ## How many of each are left? 
-table(contenders_new$door_or_face)
-sort(table(contenders_new$image_type), decreasing = TRUE)
+table(contenders_102224$door_or_face)
+sort(table(contenders_102224$image_type), decreasing = TRUE)
 
 ## How many of each face? 
 contenders_new %>% 
