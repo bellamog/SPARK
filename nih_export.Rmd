@@ -1,0 +1,136 @@
+---
+title: "nihreport_thing"
+author: "Bella moger"
+date: "2025-01-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+
+rm(list=ls())
+
+library(tidyverse)
+library(psycho)
+library(dplyr)
+library(xfun)
+library(dplyr)
+
+
+ari<-read.csv(file.choose())
+```
+
+
+```{r cars}
+#NUMERIC
+how.old_agg <- aggregate(ari$How.old.is..child_initials.. ~ ari$Record.ID, data = ari, sum)
+
+score_agg <- aggregate(ari$ARI...Total.Score..Sum. ~ ari$Record.ID, data = ari, sum)
+```
+
+
+```{r cars}
+#TEXT BASED
+
+guid_agg <- aggregate( ari$GUID ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+date_agg <- aggregate( ari$Date.of.Visit ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+sex_agg <- aggregate(ari$What.is.your.child.s.biological.sex. ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+```
+
+
+```{r}
+
+#### QUESTIONS
+one_agg <- aggregate(ari$I.am.easily.annoyed.by.others ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+two_agg <-aggregate(ari$I.often.lose.my.temper ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+three_agg <- aggregate(ari$I.stay.angry.for.a.long.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+four_agg<- aggregate(ari$I.am.angry.most.of.the.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+five_agg<- aggregate(ari$I.get.angry.frequently ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+six_agg<-aggregate(ari$I.lose.my.temper.easily ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+seven_agg<- aggregate(ari$Overall..irritability.causes.me.problems ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+```
+
+
+```{r}
+### COMBINE ALL OF THESE
+
+combined_numeric<-merge(how.old_agg,score_agg,by="ari$Record.ID")
+combined_one<-merge(guid_agg,date_agg,by="ari$Record.ID")
+
+test<-merge(combined_numeric,combined_one,by="ari$Record.ID")
+
+#######
+
+combined_two<-merge(sex_agg,one_agg,by="ari$Record.ID")
+combined_three<-merge(two_agg,three_agg,by="ari$Record.ID")
+
+test.two<-merge(combined_two,combined_three,by="ari$Record.ID")
+
+#######
+
+combined_four<-merge(four_agg,five_agg,by="ari$Record.ID")
+combined_five<-merge(six_agg,seven_agg,by="ari$Record.ID")
+
+test.three<-merge(combined_four,combined_five,by="ari$Record.ID")
+
+#####
+
+
+final_almost<-merge(test,test.two,by="ari$Record.ID")
+
+final<-merge(final_almost,test.three,by"ari$Record.ID")
+
+```
+
+combining_both<-merge(combined_numeric,combined_text,by="ari$Record.ID")
+
+
+  
+all<-
+  c(how.old_agg,score_agg,guid_agg,date_agg,sex_agg,one_agg,two_agg,three_agg,four_agg,five_agg,six_agg,seven_agg)
+
+
+print(all)
+
+```
+
+
+
+#I WANT TO DOWNLOAD THE "CONTENDERS"
+write.csv(ari,"ari_ok.csv")
+
+#location
+getwd()
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
