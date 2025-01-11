@@ -16,7 +16,6 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-summary(cars)
 
 rm(list=ls())
 
@@ -27,45 +26,48 @@ library(xfun)
 library(dplyr)
 
 
-ari<-read.csv(file.choose())
+bdi<-read.csv(file.choose())
 ```
 
 
 ```{r cars}
 #NUMERIC
-how.old_agg <- aggregate(ari$How.old.is..child_initials.. ~ ari$Record.ID, data = ari, sum)
+how.old_agg <- aggregate(bdi$How.old.are.you. ~ bdi$Record.ID, data = bdi, sum)
 
-score_agg <- aggregate(ari$ARI...Total.Score..Sum. ~ ari$Record.ID, data = ari, sum)
+score_agg <- aggregate(bdi$BDI.II.Depression.Score..sum. ~ bdi$Record.ID, data = bdi, sum)
 ```
 
 
 ```{r cars}
 #TEXT BASED
 
-guid_agg <- aggregate( ari$GUID ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+guid_agg <- aggregate( bdi$GUID ~ bdi$Record.ID, data = bdi, function(x) paste(x, collapse = ","))
 
-date_agg <- aggregate( ari$Date.of.Visit ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+date_agg <- aggregate( bdi$Date.of.Visit ~ bdi$Record.ID, data = bdi, function(x) paste(x, collapse = ","))
 
-sex_agg <- aggregate(ari$What.is.your.child.s.biological.sex. ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#sex_agg <- aggregate(ari$What.is.your.child.s.biological.sex. ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 ```
 
 
 ```{r}
 
 #### QUESTIONS
-one_agg <- aggregate(ari$I.am.easily.annoyed.by.others ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#one_agg <- aggregate(ari$I.am.easily.annoyed.by.others ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-two_agg <-aggregate(ari$I.often.lose.my.temper ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#two_agg <-aggregate(ari$I.often.lose.my.temper ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-three_agg <- aggregate(ari$I.stay.angry.for.a.long.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#three_agg <- aggregate(ari$I.stay.angry.for.a.long.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-four_agg<- aggregate(ari$I.am.angry.most.of.the.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#four_agg<- aggregate(ari$I.am.angry.most.of.the.time ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-five_agg<- aggregate(ari$I.get.angry.frequently ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#five_agg<- aggregate(ari$I.get.angry.frequently ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-six_agg<-aggregate(ari$I.lose.my.temper.easily ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#six_agg<-aggregate(ari$I.lose.my.temper.easily ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
 
-seven_agg<- aggregate(ari$Overall..irritability.causes.me.problems ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+#seven_agg<- aggregate(ari$Overall..irritability.causes.me.problems ~ ari$Record.ID, data = ari, function(x) paste(x, collapse = ","))
+
+questions_agg<-aggregate(6:26 ~ bdi$Record.ID, data = bdi,function(x) paste(x, collapse = ","))
+combine_questions<-merge(6:26 ~)
 
 ```
 
@@ -97,9 +99,25 @@ test.three<-merge(combined_four,combined_five,by="ari$Record.ID")
 
 final_almost<-merge(test,test.two,by="ari$Record.ID")
 
-final<-merge(final_almost,test.three,by"ari$Record.ID")
+```
+
+```{r}
+
+write.csv(final_almost,"ari_most.csv")
+getwd()
 
 ```
+
+```{r}
+
+write.csv(test.three,"ari_rest.csv")
+getwd()
+
+```
+
+
+final<-merge(final_almost,test.three,by"ari$Record.ID")
+
 
 combining_both<-merge(combined_numeric,combined_text,by="ari$Record.ID")
 
