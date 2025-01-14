@@ -26,7 +26,7 @@ library(xfun)
 library(dplyr)
 
 
-scq<-read.csv(file.choose())
+ari.poc<-read.csv(file.choose())
 
 ```
 
@@ -61,11 +61,11 @@ getwd()
 #THIS CHUNK!!
 #make sure right amount of rows (# - 1)
 
-df_aggregated <- scq %>%
+df_aggregated <- ari.poc %>%
   group_by(Record.ID) %>%
-  summarize(across(1:46, ~ paste(unique(.), collapse = ", "), .names = "agg_{.col}"))
+  summarize(across(1:13, ~ paste(unique(.), collapse = ", "), .names = "agg_{.col}"))
 
-write.csv(df_aggregated,"scq.csv")
+write.csv(df_aggregated,"ari.poc_full.csv")
 getwd()
 
 #numeric_aggregated <- cbcl %>%
