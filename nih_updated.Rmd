@@ -26,8 +26,12 @@ library(xfun)
 library(dplyr)
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 pds.child <-read.csv(file.choose())
+=======
+scaared.child <-read.csv(file.choose())
+>>>>>>> Stashed changes
 =======
 scaared.child <-read.csv(file.choose())
 >>>>>>> Stashed changes
@@ -66,11 +70,21 @@ getwd()
 #make sure right amount of rows (# - 1)
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 df_aggregated <- pds.child %>%
   group_by(Record.ID) %>%
   summarize(across(1:23, ~ paste(unique(.), collapse = ", "), .names = "agg_{.col}"))
 
 write.csv(df_aggregated,"pds.child_full.csv")
+=======
+df_aggregated <- scaared.child %>%
+  group_by(Record.ID) %>%
+  summarize(across(1:51, ~ paste(unique(.), collapse = ", "), .names = "agg_{.col}"))
+
+
+
+write.csv(df_aggregated,"scaared.child_full.csv")
+>>>>>>> Stashed changes
 =======
 df_aggregated <- scaared.child %>%
   group_by(Record.ID) %>%
